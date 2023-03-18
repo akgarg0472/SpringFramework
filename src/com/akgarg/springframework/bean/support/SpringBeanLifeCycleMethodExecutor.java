@@ -27,13 +27,13 @@ public class SpringBeanLifeCycleMethodExecutor implements BeanLifeCycleMethodExe
     @Override
     public void executeInitMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(getClass(), "starting executing executeInitMethod for bean '" + beanName + "'");
+        logger.debug(SpringBeanLifeCycleMethodExecutor.class, "Starting executing executeInitMethod for bean '" + beanName + "'");
 
         try {
             final Object bean = beanDefinition.getBean();
 
             if (!(bean instanceof InitializingBean)) {
-                logger.trace(getClass(), "bean '" + beanName + "' is not implementing " + InitializingBean.class.getName() + ". Returning as it is without doing anything");
+                logger.trace(SpringBeanLifeCycleMethodExecutor.class, "Bean '" + beanName + "' is not implementing " + InitializingBean.class.getName() + ". Returning as it is without doing anything");
                 return;
             }
 
@@ -47,13 +47,13 @@ public class SpringBeanLifeCycleMethodExecutor implements BeanLifeCycleMethodExe
     @Override
     public void executeDestroyMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(getClass(), "starting executing executeDestroyMethod for bean '" + beanName + "'");
+        logger.trace(SpringBeanLifeCycleMethodExecutor.class, "Starting executing executeDestroyMethod for bean '" + beanName + "'");
 
         try {
             final Object bean = beanDefinition.getBean();
 
             if (!(bean instanceof DisposableBean)) {
-                logger.trace(getClass(), "bean '" + beanName + "' is not implementing " + DisposableBean.class.getName() + ". Returning as it is without doing anything");
+                logger.trace(SpringBeanLifeCycleMethodExecutor.class, "Bean '" + beanName + "' is not implementing " + DisposableBean.class.getName() + ". Returning as it is without doing anything");
                 return;
             }
 

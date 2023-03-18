@@ -5,6 +5,8 @@ import com.akgarg.springframework.bean.factory.BeanFactory;
 import com.akgarg.springframework.bean.factory.BeanResolverMetadata;
 import com.akgarg.springframework.context.AnnotationProcessor;
 import com.akgarg.springframework.context.AnnotationProcessorMetadata;
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
 import com.akgarg.springframework.util.StringUtils;
 
@@ -16,12 +18,13 @@ import java.lang.reflect.Method;
  */
 public final class ScopeAnnotationProcessor implements AnnotationProcessor {
 
+    private static final Logger logger = LogFactory.getDefaultLogger();
+
     @Override
     public void process(final AnnotationProcessorMetadata metadata) {
         Assert.notNull(metadata, "ScopeAnnotationProcessor metadata can't be null");
         Assert.notNull(metadata.getBeanDefinition(), "ScopeAnnotationProcessor BeanDefinition can't be null");
         Assert.nonEmpty(metadata.getResolveType(), "ScopeAnnotationProcessor resolveType is invalid " + metadata.getResolveType());
-
         this.doProcess(metadata);
     }
 
@@ -39,7 +42,11 @@ public final class ScopeAnnotationProcessor implements AnnotationProcessor {
         final BeanDefinition beanDefinition = metadata.getBeanDefinition();
         Assert.notNull(beanDefinition, "AnnotationProcessor BeanDefinition can't be null");
 
+        final String beanName = beanDefinition.getBeanName();
+        final String beanType = beanDefinition.getBean().getClass().getName();
         final Scope annotation;
+
+        logger.debug(ScopeAnnotationProcessor.class, "Resolving for bean=" + beanDefinition.getBeanName() + " and for type=" + beanType);
 
         if (BeanResolverMetadata.RESOLVE_METHOD_TYPE.equals(metadata.getResolveType())) {
             final Method method = metadata.getMethod();
@@ -60,9 +67,11 @@ public final class ScopeAnnotationProcessor implements AnnotationProcessor {
                 }
 
                 if (BeanFactory.SCOPE_PROTOTYPE.equals(scope)) {
+                    logger.trace(ScopeAnnotationProcessor.class, "Marking bean=" + beanName + " of type=" + beanType + " as singleton=false and prototype=true");
                     beanDefinition.setSingleton(false);
                     beanDefinition.setPrototype(true);
                 } else {
+                    logger.trace(getClass(), "Marking bean=" + beanName + " of type=" + beanType + " as singleton=true and prototype=false");
                     beanDefinition.setSingleton(true);
                     beanDefinition.setPrototype(false);
                 }

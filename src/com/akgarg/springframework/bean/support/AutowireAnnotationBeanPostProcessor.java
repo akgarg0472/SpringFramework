@@ -10,6 +10,8 @@ import com.akgarg.springframework.bean.factory.annotation.Autowired;
 import com.akgarg.springframework.bean.factory.annotation.Qualifier;
 import com.akgarg.springframework.context.exceptions.DependencyInjectionException;
 import com.akgarg.springframework.context.exceptions.UnsatisfiedDependencyException;
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
 
 import java.lang.reflect.Field;
@@ -24,11 +26,15 @@ import java.util.stream.Collectors;
  */
 public final class AutowireAnnotationBeanPostProcessor {
 
+    private static final Logger logger = LogFactory.getDefaultLogger();
+
     private final BeanFactory beanFactory;
 
     public AutowireAnnotationBeanPostProcessor(final BeanFactory beanFactory) {
+        logger.info(AutowireAnnotationBeanPostProcessor.class, "Starting initialization");
         this.beanFactory = beanFactory;
         Assert.notNull(beanFactory, "BeanFactory shouldn't be null");
+        logger.debug(AutowireAnnotationBeanPostProcessor.class, "Initialization completed");
     }
 
     public void process(final BeanDefinition beanDefinition) {
@@ -58,7 +64,10 @@ public final class AutowireAnnotationBeanPostProcessor {
         }
     }
 
-    private void injectFieldWithoutUsingQualifierAnnotation(final BeanDefinition beanDefinition, final Field field) {
+    private void injectFieldWithoutUsingQualifierAnnotation(
+            final BeanDefinition beanDefinition, final Field field
+    ) {
+        final String beanName = beanDefinition.getBeanName();
         final Class<?> beanTypeToInject = field.getType();
         final Map<String, BeanDefinition> beanDefinitionsOfType = this.beanFactory.getBeanDefinitionsOfType(beanTypeToInject);
 
@@ -73,16 +82,47 @@ public final class AutowireAnnotationBeanPostProcessor {
         final Object dependency = getDependencyBean(beanDefinitionsOfType);
 
         try {
+            logger.debug(
+                    AutowireAnnotationBeanPostProcessor.class,
+                    "Autowiring dependency with name='" + beanName + "' of type '" + beanTypeToInject.getName() + "' in " + beanName
+            );
             field.setAccessible(true);
             field.set(beanDefinition.getBean(), dependency);
         } catch (IllegalAccessException e) {
-            throw new DependencyInjectionException("Exception occurred while injecting bean with type '" + beanTypeToInject.getName() + "' in '" + beanDefinition.getBeanName() + "' bean", e);
+            throw new DependencyInjectionException("Exception occurred while injecting bean with type '" + beanTypeToInject.getName() + "' in '" + beanName + "' bean", e);
+        }
+    }
+
+    private void injectFieldUsingQualifierAnnotation(final BeanDefinition beanDefinition, final Field field) {
+        final String beanNameToInject = getQualifierAnnotation(field).value();
+        final Class<?> expectedBeanClass = field.getType();
+        final String beanName = beanDefinition.getBeanName();
+
+        try {
+            final Object beanFetchFromContainerByBeanName = this.beanFactory.getBean(beanNameToInject);
+
+            if (beanFetchFromContainerByBeanName.getClass() != expectedBeanClass) {
+                throw new UnsatisfiedDependencyException("Error injecting bean with name '" + beanNameToInject + "' in '" + beanDefinition.getBeanName() + "'. Expecting bean of type " + expectedBeanClass.getName() + " but found " + beanFetchFromContainerByBeanName.getClass().getName());
+            }
+
+            logger.debug(
+                    AutowireAnnotationBeanPostProcessor.class,
+                    "Autowiring dependency with name=" + beanNameToInject + " of type '" + expectedBeanClass.getName() + "' in " + beanName
+            );
+
+            field.setAccessible(true);
+            field.set(beanDefinition.getBean(), beanFetchFromContainerByBeanName);
+
+        } catch (NoSuchBeanDefinitionException e) {
+            throw new UnsatisfiedDependencyException("No Qualifying bean of name '" + beanNameToInject + "' found. Consider defining appropriate bean", e);
+        } catch (IllegalAccessException e) {
+            throw new DependencyInjectionException("Exception occurred while injecting bean with name '" + beanNameToInject + "' in '" + beanDefinition.getBeanName() + "' bean", e);
         }
     }
 
     private Object getDependencyBean(final Map<String, BeanDefinition> beanDefinitionsOfType) {
         if (beanDefinitionsOfType.size() == 1) {
-            return new ArrayList<>(beanDefinitionsOfType.values()).get(0);
+            return new ArrayList<>(beanDefinitionsOfType.values()).get(0).getBean();
         }
 
         final List<BeanDefinition> dependencyBeans = beanDefinitionsOfType.values()
@@ -96,39 +136,17 @@ public final class AutowireAnnotationBeanPostProcessor {
         }
 
         if (dependencyBeans.size() > 1) {
-            final String beanNames = dependencyBeans
-                    .stream()
+            final String beanNames = dependencyBeans.stream()
                     .map(BeanDefinition::getBeanName)
                     .collect(Collectors.joining(","));
-
             throw new NoUniquePrimaryBeanFoundException("No unique primary bean found. Expected one primary bean but found two: " + beanNames);
         }
 
-        return dependencyBeans.get(0);
+        return dependencyBeans.get(0).getBean();
     }
 
     private boolean hasPrimaryBean(final Map<String, BeanDefinition> beans) {
         return beans.values().stream().anyMatch(BeanDefinition::isPrimary);
-    }
-
-    private void injectFieldUsingQualifierAnnotation(final BeanDefinition beanDefinition, final Field field) {
-        final String beanNameToInject = getQualifierAnnotation(field).value();
-        final Class<?> expectedBeanClass = field.getType();
-
-        try {
-            final Object beanFetchFromContainerByBeanName = this.beanFactory.getBean(beanNameToInject);
-
-            if (beanFetchFromContainerByBeanName.getClass() != expectedBeanClass) {
-                throw new UnsatisfiedDependencyException("Error injecting bean with name '" + beanNameToInject + "' in '" + beanDefinition.getBeanName() + "'. Expecting bean of type " + expectedBeanClass.getName() + " but found " + beanFetchFromContainerByBeanName.getClass().getName());
-            }
-
-            field.setAccessible(true);
-            field.set(beanDefinition.getBean(), beanFetchFromContainerByBeanName);
-        } catch (NoSuchBeanDefinitionException e) {
-            throw new UnsatisfiedDependencyException("No Qualifying bean of name '" + beanNameToInject + "' found. Consider defining appropriate bean", e);
-        } catch (IllegalAccessException e) {
-            throw new DependencyInjectionException("Exception occurred while injecting bean with name '" + beanNameToInject + "' in '" + beanDefinition.getBeanName() + "' bean", e);
-        }
     }
 
     private boolean isFieldAnnotatedWithQualifierAnnotation(final Field field) {

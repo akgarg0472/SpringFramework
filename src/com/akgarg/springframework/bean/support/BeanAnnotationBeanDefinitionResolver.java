@@ -8,6 +8,8 @@ import com.akgarg.springframework.bean.factory.annotation.PrimaryAnnotationProce
 import com.akgarg.springframework.bean.factory.annotation.ScopeAnnotationProcessor;
 import com.akgarg.springframework.context.AnnotationProcessor;
 import com.akgarg.springframework.context.annotations.DefaultAnnotationProcessorMetadata;
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
 import com.akgarg.springframework.util.ReflectionUtils;
 
@@ -21,12 +23,15 @@ import java.util.Collection;
  */
 public final class BeanAnnotationBeanDefinitionResolver implements BeanDefinitionResolver {
 
+    private static final Logger logger = LogFactory.getDefaultLogger();
     private final Collection<AnnotationProcessor> annotationProcessors;
 
     public BeanAnnotationBeanDefinitionResolver() {
+        logger.info(BeanAnnotationBeanDefinitionResolver.class, "Initialization started");
         this.annotationProcessors = new ArrayList<>();
         this.initAnnotationProcessors();
         Assert.nonEmpty(this.annotationProcessors, "AnnotationProcessors can't be empty");
+        logger.info(BeanAnnotationBeanDefinitionResolver.class, "Initialization completed");
     }
 
     @Override
@@ -38,6 +43,11 @@ public final class BeanAnnotationBeanDefinitionResolver implements BeanDefinitio
         final String initMethod = metadata.getBeanInitMethod();
         final String destroyMethod = metadata.getBeanDestroyMethod();
         final boolean autowiredCandidate = metadata.isAutowiredCandidate();
+
+        logger.debug(
+                BeanAnnotationBeanDefinitionResolver.class,
+                "Resolving @Bean for bean=" + beanName + " for resolve type=" + resolveType
+        );
 
         try {
             Object bean;

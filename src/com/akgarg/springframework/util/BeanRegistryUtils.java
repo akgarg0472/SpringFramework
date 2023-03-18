@@ -23,7 +23,8 @@ public final class BeanRegistryUtils {
     }
 
     public static Collection<? extends BeanDefinitionHolder> getBeanDefinitionHolders(
-            final Class<?> clazz, final ConfigurableBeanFactory beanFactory
+            final Class<?> clazz,
+            final ConfigurableBeanFactory beanFactory
     ) {
         Assert.notNull(clazz, "Class should be non-null to scan for bean methods");
 

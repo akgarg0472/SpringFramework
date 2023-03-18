@@ -23,13 +23,19 @@ public class BeanAnnotationLifecycleMethodExecutor implements BeanLifeCycleMetho
     @Override
     public void executeInitMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(getClass(), "starting executing executeInitMethod for bean '" + beanName + "'");
+        logger.debug(
+                BeanAnnotationLifecycleMethodExecutor.class,
+                "starting executeInitMethod for bean '" + beanName + "'"
+        );
 
         try {
             final String beanInitMethod = beanDefinition.getBeanInitMethod();
 
             if (!StringUtils.isNonBlankString(beanInitMethod)) {
-                logger.trace(getClass(), "Bean '" + beanName + "' doesn't have any initMethod defined. Returning as it is without doing anything");
+                logger.trace(
+                        BeanAnnotationLifecycleMethodExecutor.class,
+                        "Bean '" + beanName + "' doesn't have any initMethod defined. Returning as it is without doing anything"
+                );
                 return;
             }
 
@@ -51,12 +57,19 @@ public class BeanAnnotationLifecycleMethodExecutor implements BeanLifeCycleMetho
     @Override
     public void executeDestroyMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(getClass(), "starting executing executeDestroyMethod for bean '" + beanName + "'");
+        logger.trace(
+                BeanAnnotationLifecycleMethodExecutor.class,
+                "starting executing executeDestroyMethod for bean '" + beanName + "'"
+        );
 
         try {
             final String beanDestroyMethod = beanDefinition.getBeanDestroyMethod();
+
             if (!StringUtils.isNonBlankString(beanDestroyMethod)) {
-                logger.trace(getClass(), "Bean '" + beanName + "' doesn't have any destroyMethod defined");
+                logger.trace(
+                        BeanAnnotationLifecycleMethodExecutor.class,
+                        "Bean '" + beanName + "' doesn't have any destroyMethod defined"
+                );
                 return;
             }
 

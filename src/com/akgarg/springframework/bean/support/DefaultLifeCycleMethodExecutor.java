@@ -21,9 +21,13 @@ public class DefaultLifeCycleMethodExecutor implements LifeCycleMethodExecutor {
     private final Collection<BeanLifeCycleMethodExecutor> lifeCycleMethodExecutors;
 
     public DefaultLifeCycleMethodExecutor() {
+        logger.info(getClass(), "Initializing started");
+
         this.lifeCycleMethodExecutors = getLifeCycleMethodExecutors();
+        Assert.nonEmpty(lifeCycleMethodExecutors, "LifeCycleMethodExecutors can't be null or empty");
+
         logger.debug(
-                getClass(),
+                DefaultLifeCycleMethodExecutor.class,
                 "LifeCycleMethodExecutor initialized successfully with " + lifeCycleMethodExecutors.size() + " executors"
         );
     }
@@ -31,7 +35,8 @@ public class DefaultLifeCycleMethodExecutor implements LifeCycleMethodExecutor {
     @Override
     public void executeInitMethods(final BeanDefinition beanDefinition) {
         Assert.notNull(beanDefinition, "BeanDefinition can't be null");
-        logger.debug(getClass(), "starting execution of init methods for bean '" + beanDefinition.getBeanName() + "'");
+
+        logger.debug(DefaultLifeCycleMethodExecutor.class, "starting execution of init methods for bean '" + beanDefinition.getBeanName() + "'");
 
         this.lifeCycleMethodExecutors
                 .forEach(lifeCycleMethodExecutor ->
@@ -41,7 +46,11 @@ public class DefaultLifeCycleMethodExecutor implements LifeCycleMethodExecutor {
     @Override
     public void executeDestroyMethods(final BeanDefinition beanDefinition) {
         Assert.notNull(beanDefinition, "BeanDefinition can't be null");
-        logger.debug(getClass(), "starting execution of destroy methods for bean '" + beanDefinition.getBeanName() + "'");
+
+        logger.debug(
+                DefaultLifeCycleMethodExecutor.class,
+                "starting execution of destroy methods for bean '" + beanDefinition.getBeanName() + "'"
+        );
 
         this.lifeCycleMethodExecutors
                 .forEach(lifeCycleMethodExecutor ->
@@ -50,10 +59,12 @@ public class DefaultLifeCycleMethodExecutor implements LifeCycleMethodExecutor {
 
     private Collection<BeanLifeCycleMethodExecutor> getLifeCycleMethodExecutors() {
         final Collection<BeanLifeCycleMethodExecutor> executors = new ArrayList<>();
+
         executors.add(new JavaSpecificationLifecycleMethodsExecutor());
         executors.add(new SpringBeanLifeCycleMethodExecutor());
         executors.add(new BeanAnnotationLifecycleMethodExecutor());
+
         return executors;
     }
-    
+
 }

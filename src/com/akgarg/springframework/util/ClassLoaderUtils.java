@@ -1,10 +1,15 @@
 package com.akgarg.springframework.util;
 
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
+
 /**
  * @author Akhilesh Garg
  * @since 02-03-2023
  */
 public final class ClassLoaderUtils {
+
+    private static final Logger logger = LogFactory.getDefaultLogger();
 
     private ClassLoaderUtils() {
         throw new UnsupportedOperationException();
@@ -25,7 +30,7 @@ public final class ClassLoaderUtils {
             }
 
         } catch (Throwable e) {
-            // unable to find class loader
+            logger.fatal(ClassLoaderUtils.class, "Exception occurred while obtaining ClassLoader");
         }
 
         return classLoader;

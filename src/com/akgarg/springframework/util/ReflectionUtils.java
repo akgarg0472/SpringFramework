@@ -2,6 +2,8 @@ package com.akgarg.springframework.util;
 
 import com.akgarg.springframework.bean.exception.InvalidBeanLifeCycleMethodException;
 import com.akgarg.springframework.bean.factory.annotation.Bean;
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,6 +15,8 @@ import java.util.Arrays;
  */
 public final class ReflectionUtils {
 
+    private static final Logger logger = LogFactory.getDefaultLogger();
+
     private ReflectionUtils() {
         throw new UnsupportedOperationException();
     }
@@ -21,6 +25,7 @@ public final class ReflectionUtils {
         try {
             return clazz.newInstance();
         } catch (Exception e) {
+            logger.fatal(ReflectionUtils.class, "Error creating instance of '" + clazz.getName() + "'");
             return null;
         }
     }

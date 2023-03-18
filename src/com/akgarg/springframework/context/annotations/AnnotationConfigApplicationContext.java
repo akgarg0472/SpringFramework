@@ -17,6 +17,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
     static {
         LogFactory.setLogLevel(LogLevel.INFO);
+        logger.info(AnnotationConfigApplicationContext.class, "Starting initializing Spring container");
     }
 
     private final ClassPathBeanDefinitionScanner beanDefinitionScanner;
@@ -58,7 +59,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
         final long startupDuration = System.currentTimeMillis() - getStartTimestamp();
 
         logger.info(
-                getClass(),
+                AnnotationConfigApplicationContext.class,
                 "ApplicationContext took " + startupDuration + "ms for initialization"
         );
     }

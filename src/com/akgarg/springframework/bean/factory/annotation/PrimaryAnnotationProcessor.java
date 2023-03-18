@@ -5,6 +5,8 @@ import com.akgarg.springframework.bean.factory.BeanDefinition;
 import com.akgarg.springframework.bean.factory.BeanResolverMetadata;
 import com.akgarg.springframework.context.AnnotationProcessor;
 import com.akgarg.springframework.context.AnnotationProcessorMetadata;
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
 
 import java.lang.annotation.Annotation;
@@ -15,6 +17,8 @@ import java.lang.reflect.Method;
  * @since 28-02-2023
  */
 public final class PrimaryAnnotationProcessor implements AnnotationProcessor {
+
+    private static final Logger logger = LogFactory.getDefaultLogger();
 
     @Override
     public void process(final AnnotationProcessorMetadata metadata) {
@@ -39,6 +43,8 @@ public final class PrimaryAnnotationProcessor implements AnnotationProcessor {
         final BeanDefinition beanDefinition = metadata.getBeanDefinition();
         final String resolveType = metadata.getResolveType();
 
+        logger.debug(PrimaryAnnotationProcessor.class, "Resolving for bean=" + beanDefinition.getBeanName() + " and for type=" + resolveType);
+
         Assert.notNull(beanDefinition, "AnnotationProcessor BeanDefinition can't be null");
         Assert.nonEmpty(resolveType, "AnnotationProcessor resolve type is invalid");
 
@@ -57,6 +63,7 @@ public final class PrimaryAnnotationProcessor implements AnnotationProcessor {
         }
 
         if (annotation != null) {
+            logger.trace(PrimaryAnnotationProcessor.class, "Marking bean=" + beanDefinition.getBeanName() + " of type=" + beanDefinition.getBean().getClass().getName() + "as primary bean");
             beanDefinition.setPrimary(true);
         }
     }

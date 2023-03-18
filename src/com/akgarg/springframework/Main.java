@@ -2,7 +2,6 @@ package com.akgarg.springframework;
 
 import com.akgarg.springframework.context.ApplicationContext;
 import com.akgarg.springframework.context.annotations.AnnotationConfigApplicationContext;
-import com.akgarg.springframework.logger.LogLevel;
 import com.akgarg.springframework.logger.support.LogFactory;
 
 import java.util.Arrays;
@@ -14,13 +13,11 @@ import java.util.Arrays;
 public class Main {
 
     public static void main(String[] args) {
-        LogFactory.setLogLevel(LogLevel.ALL);
-
         final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class);
 
         printDependencies(context);
         System.out.println("Hello Custom Spring Framework");
-        LogFactory.getDefaultLogger().warn(Main.class, "Ending application");
+        LogFactory.getDefaultLogger().info(Main.class, "Ending application");
     }
 
     private static void printDependencies(final ApplicationContext context) {

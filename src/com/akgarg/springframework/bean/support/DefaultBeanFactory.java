@@ -27,7 +27,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     private final BeanDefinitionResolver beanDefinitionResolver;
 
     public DefaultBeanFactory(final boolean allowBeanOverriding) {
-        logger.debug(getClass(), "Starting initialization of DefaultBeanFactory");
+        logger.info(DefaultBeanFactory.class, "Starting initialization of DefaultBeanFactory");
 
         this.startTimestamp = System.currentTimeMillis();
         this.beanDefinitionMap = new LinkedHashMap<>();
@@ -38,12 +38,15 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
         Assert.notNull(this.beanResolver, "BeanResolver can't be null");
         Assert.notNull(this.beanDefinitionResolver, "BeanDefinitionResolver can't be null");
 
-        logger.debug(getClass(), "Initialization of DefaultBeanFactory completed successfully");
+        logger.debug(
+                DefaultBeanFactory.class,
+                "Initialization of DefaultBeanFactory completed successfully"
+        );
     }
 
     @Override
     public Object getBean(final String name) {
-        logger.debug(getClass(), "Getting bean with name=" + name);
+        logger.debug(DefaultBeanFactory.class, "Getting bean with name=" + name);
 
         final BeanDefinition beanDefinition = this.beanDefinitionMap.get(name);
 
@@ -56,19 +59,17 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public <T> T getBean(final Class<T> type) {
-        logger.debug(getClass(), "Getting bean of type '" + type + "'");
+        logger.debug(DefaultBeanFactory.class, "Getting bean of type '" + type + "'");
 
         final Map<String, T> beans = this.getBeansOfType(type);
 
         if (beans.isEmpty()) {
             final String message = "No bean found of type " + type.getName();
-            logger.fatal(getClass(), message);
             throw new NoSuchBeanDefinitionException(message);
         }
 
         if (beans.size() > 1) {
             final String message = "No unique bean found for type " + type.getName() + ", Expecting 1 bean but found " + beans.size() + " beans " + beans.keySet();
-            logger.fatal(getClass(), message);
             throw new NoUniqueBeanDefinitionException(message);
         }
 
@@ -78,7 +79,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(final String beanName, final Class<T> type) {
-        logger.debug(getClass(), "Getting bean with name=" + beanName + " and type=" + type);
+        logger.debug(DefaultBeanFactory.class, "Getting bean with name=" + beanName + " and type=" + type);
 
         Assert.nonEmpty(beanName, "Bean name should be a valid string");
         Assert.notNull(type, "Bean type should be non null");
@@ -87,7 +88,6 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
         if (beanDefinition == null || beanDefinition.getBean() == null) {
             final String message = "No bean found with name '" + beanName + "'";
-            logger.fatal(getClass(), message);
             throw new NoSuchBeanDefinitionException(message);
         }
 
@@ -97,14 +97,13 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
             return (T) bean;
         } catch (ClassCastException e) {
             final String message = "Bean " + "'" + beanName + "' is expected of type '" + type.getName() + "' but was actually of type '" + bean.getClass().getName() + "'";
-            logger.fatal(getClass(), message);
             throw new BeanNotOfRequiredTypeException(message);
         }
     }
 
     @Override
     public String[] getBeanNamesForType(final Class<?> type) {
-        logger.debug(getClass(), "Getting bean names list for type '" + type + "'");
+        logger.debug(DefaultBeanFactory.class, "Getting bean names list for type '" + type + "'");
 
         final Set<String> beansOfType = this.getBeansOfType(type).keySet();
         final String[] beanNames = new String[beansOfType.size()];
@@ -120,21 +119,21 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> Map<String, T> getBeansOfType(final Class<T> type) {
-        logger.debug(getClass(), "Getting bean names map for type '" + type + "'");
+        logger.debug(DefaultBeanFactory.class, "Getting bean names map for type '" + type + "'");
 
         final Map<String, BeanDefinition> beanDefinitionsOfType = this.getBeanDefinitionsOfType(type);
         final Map<String, T> beansOfType = new HashMap<>(beanDefinitionsOfType.size());
 
-        beanDefinitionsOfType.forEach((beanName, beanDefinition) -> {
-            beansOfType.put(beanName, (T) beanDefinition.getBean());
-        });
+        beanDefinitionsOfType.forEach((beanName, beanDefinition) ->
+                                              beansOfType.put(beanName, (T) beanDefinition.getBean())
+        );
 
         return beansOfType;
     }
 
     @Override
     public <T> Map<String, BeanDefinition> getBeanDefinitionsOfType(final Class<T> type) {
-        logger.debug(getClass(), "Getting bean definitions for type '" + type + "'");
+        logger.debug(DefaultBeanFactory.class, "Getting bean definitions for type '" + type + "'");
 
         final Set<Map.Entry<String, BeanDefinition>> beans = this.beanDefinitionMap.entrySet();
         final Map<String, BeanDefinition> beanDefinitionsOfTypeMap = new HashMap<>();
@@ -152,33 +151,32 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public void registerBeanDefinition(final String beanName, final BeanDefinition beanDefinition) {
-        logger.debug(getClass(), "Registering bean definition with name = " + beanName);
+        logger.debug(DefaultBeanFactory.class, "Registering bean definition with name = " + beanName);
 
         final Object existingBean = this.beanDefinitionMap.get(beanName);
 
         if (existingBean != null) {
-            logger.debug(getClass(), "existing bean found with name=" + beanName);
+            logger.debug(DefaultBeanFactory.class, "existing bean found with name=" + beanName);
 
             if (allowBeanOverriding) {
-                logger.debug(getClass(), "overriding existing bean having name " + beanName + " with new instance");
+                logger.debug(DefaultBeanFactory.class, "Overriding existing bean having name " + beanName + " with new instance");
                 this.beanDefinitionMap.put(beanName, beanDefinition);
             } else {
                 final String message = "Bean with name '" + beanName + "' already exists. Consider defining bean with other name";
-                logger.fatal(getClass(), message);
                 throw new BeanCreationException(message);
             }
         } else {
-            logger.debug(getClass(), "adding bean definition with name=" + beanName + " in registry");
+            logger.debug(getClass(), "Inserting bean definition with name=" + beanName + " in beans registry");
             this.beanDefinitionMap.put(beanName, beanDefinition);
         }
     }
 
     @Override
     public void unregisterBeanDefinition(final String beanName) {
-        logger.trace(getClass(), "unregistering bean with name '" + beanName + "'");
+        logger.debug(DefaultBeanFactory.class, "Unregistering bean with name '" + beanName + "'");
 
         if (this.containsBeanDefinition(beanName)) {
-            logger.debug(getClass(), "removing bean with name '" + beanName + "' from registry");
+            logger.debug(DefaultBeanFactory.class, "Removing bean with name '" + beanName + "' from registry");
             this.beanDefinitionMap.remove(beanName);
         }
     }
@@ -208,7 +206,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public Object register(final Class<?> clazz) {
-        logger.trace(getClass(), "registering bean for class '" + clazz.getName() + "'");
+        logger.debug(DefaultBeanFactory.class, "Registering bean for class '" + clazz.getName() + "'");
 
         final String beanName = this.beanResolver.resolveName(clazz);
         final Object instance = ReflectionUtils.createInstanceForClass(clazz);
@@ -225,7 +223,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
         final BeanDefinition beanDefinition = this.beanDefinitionResolver.resolve(beanResolverMetadata);
 
-        logger.debug(getClass(), "registering bean for class '" + clazz.getName() + "' with name '" + beanName + "'");
+        logger.debug(DefaultBeanFactory.class, "Registering bean for class '" + clazz.getName() + "' with name '" + beanName + "'");
 
         this.registerBeanDefinition(beanName, beanDefinition);
 
@@ -251,7 +249,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     public BeanDefinition registerMethodBeanDefinition(final Object instance, final Method method) {
         Assert.notNull(instance, "Instance can't be null");
         Assert.notNull(method, "Method can't be null");
-        logger.trace(getClass(), "registering bean for the method '" + method.getName() + "'");
+        logger.debug(DefaultBeanFactory.class, "Registering bean for the method '" + method.getName() + "'");
 
         final String beanName = this.beanResolver.resolveName(method);
         final String beanInitMethod = this.beanResolver.resolveInitMethod(method);

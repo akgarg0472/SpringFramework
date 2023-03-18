@@ -26,7 +26,7 @@ public class JavaSpecificationLifecycleMethodsExecutor implements BeanLifeCycleM
     @Override
     public void executeInitMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(getClass(), "starting executing executeInitMethod for bean '" + beanName + "'");
+        logger.debug(JavaSpecificationLifecycleMethodsExecutor.class, "Starting executing executeInitMethod for bean '" + beanName + "'");
 
         try {
             final Object bean = beanDefinition.getBean();
@@ -36,7 +36,7 @@ public class JavaSpecificationLifecycleMethodsExecutor implements BeanLifeCycleM
                     .collect(Collectors.toList());
 
             if (methods.isEmpty()) {
-                logger.trace(getClass(), "Bean '" + beanName + "' doesn't have @PostConstruct method. Returning without doing anything");
+                logger.trace(JavaSpecificationLifecycleMethodsExecutor.class, "Bean '" + beanName + "' doesn't have @PostConstruct method. Returning without doing anything");
                 return;
             }
 
@@ -50,7 +50,7 @@ public class JavaSpecificationLifecycleMethodsExecutor implements BeanLifeCycleM
     @Override
     public void executeDestroyMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(getClass(), "starting executing executeDestroyMethod for bean '" + beanName + "'");
+        logger.debug(JavaSpecificationLifecycleMethodsExecutor.class, "Starting executing executeDestroyMethod for bean '" + beanName + "'");
 
         try {
             final Object bean = beanDefinition.getBean();
@@ -60,7 +60,7 @@ public class JavaSpecificationLifecycleMethodsExecutor implements BeanLifeCycleM
                     .collect(Collectors.toList());
 
             if (methods.isEmpty()) {
-                logger.trace(getClass(), "Bean '" + beanName + "' doesn't have @PreDestroy method. Returning without doing anything");
+                logger.trace(JavaSpecificationLifecycleMethodsExecutor.class, "Bean '" + beanName + "' doesn't have @PreDestroy method. Returning without doing anything");
                 return;
             }
 
