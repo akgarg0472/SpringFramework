@@ -23,6 +23,7 @@ public final class ClassPathBeanDefinitionScanner {
     }
 
     public void scan(final String... basePackages) {
+        // todo: implement method
         throw new UnsupportedOperationException("Scanning bean is not yet supported");
     }
 

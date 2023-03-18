@@ -21,6 +21,8 @@ public interface BeanResolverMetadata {
 
     String getBeanInitMethod();
 
+    String getBeanDestroyMethod();
+
     boolean isAutowiredCandidate();
 
 }

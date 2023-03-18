@@ -10,4 +10,8 @@ public class BeansException extends RuntimeException {
         super(message);
     }
 
+    public BeansException(final String message, final Throwable throwable) {
+        super(message, throwable);
+    }
+
 }

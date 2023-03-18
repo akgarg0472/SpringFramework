@@ -1,9 +1,11 @@
 package com.akgarg.springframework.util;
 
+import com.akgarg.springframework.bean.exception.InvalidBeanLifeCycleMethodException;
 import com.akgarg.springframework.bean.factory.annotation.Bean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * @author Akhilesh Garg
@@ -32,6 +34,14 @@ public final class ReflectionUtils {
 
     public static boolean isMethodBeanCandidate(final Method method) {
         return method.getAnnotation(Bean.class) != null;
+    }
+
+    public static void checkMethodParamsForBeanLifeCycleMethods(final Method method) {
+        final int parameterCount = method.getParameterCount();
+
+        if (parameterCount > 0) {
+            throw new InvalidBeanLifeCycleMethodException("lifecycle method can't have any parameters. Expecting 0 params but found " + parameterCount + " -> " + Arrays.toString(method.getParameters()));
+        }
     }
 
 }

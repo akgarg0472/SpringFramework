@@ -3,6 +3,7 @@ package com.akgarg.springframework.logger.support;
 import com.akgarg.springframework.logger.LogLevel;
 import com.akgarg.springframework.logger.Logger;
 import com.akgarg.springframework.logger.exception.IllegalOperationException;
+import com.akgarg.springframework.logger.exception.LogFactoryException;
 
 /**
  * @author Akhilesh Garg
@@ -19,8 +20,13 @@ public class LogFactory {
 
     public static Logger getDefaultLogger() {
         if (logger == null) {
-            logger = new ConsoleLoggerImpl(logLevel);
+            try {
+                logger = new ConsoleLogger(logLevel);
+            } catch (Exception e) {
+                throw new LogFactoryException("Exception creating logger instance through LoggerFactory", e);
+            }
         }
+
         return logger;
     }
 

@@ -89,6 +89,16 @@ public class Utils {
             public void setBeanInitMethod(final String beanInitMethod) {
 
             }
+
+            @Override
+            public String getBeanDestroyMethod() {
+                return null;
+            }
+
+            @Override
+            public void setBeanDestroyMethod(final String beanDestroyMethod) {
+
+            }
         };
     }
 

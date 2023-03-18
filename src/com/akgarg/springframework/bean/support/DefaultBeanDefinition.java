@@ -16,7 +16,8 @@ public final class DefaultBeanDefinition implements BeanDefinition {
     private boolean autowireCandidate;
     private Object bean;
     private String beanInitMethod;
-
+    private String beanDestroyMethod;
+    
     public DefaultBeanDefinition() {
         this.setScope(DefaultBeanFactory.SCOPE_SINGLETON);
         this.setSingleton(true);
@@ -103,6 +104,16 @@ public final class DefaultBeanDefinition implements BeanDefinition {
     @Override
     public void setBeanInitMethod(final String beanInitMethod) {
         this.beanInitMethod = beanInitMethod;
+    }
+
+    @Override
+    public String getBeanDestroyMethod() {
+        return this.beanDestroyMethod;
+    }
+
+    @Override
+    public void setBeanDestroyMethod(final String beanDestroyMethod) {
+        this.beanDestroyMethod = beanDestroyMethod;
     }
 
 }

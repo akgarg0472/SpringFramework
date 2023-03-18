@@ -14,6 +14,8 @@ public interface BeanResolver {
 
     String resolveInitMethod(Method method);
 
+    String resolveDestroyMethod(Method method);
+
     boolean resolveAutowiredCandidate(Method method);
 
 }

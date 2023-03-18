@@ -28,7 +28,7 @@ public final class ScopeAnnotationProcessor implements AnnotationProcessor {
     private void doProcess(final AnnotationProcessorMetadata metadata) {
         final String resolveType = metadata.getResolveType();
 
-        if (isResolveTypeValid(resolveType)) {
+        if (isBeanResolveTypeValid(resolveType)) {
             doResolve(metadata);
         } else {
             throw new IllegalStateException("Invalid bean resolver type provided " + resolveType);
@@ -72,7 +72,7 @@ public final class ScopeAnnotationProcessor implements AnnotationProcessor {
         }
     }
 
-    private boolean isResolveTypeValid(final String resolveType) {
+    private boolean isBeanResolveTypeValid(final String resolveType) {
         return BeanResolverMetadata.RESOLVE_METHOD_TYPE.equals(resolveType) ||
                 BeanResolverMetadata.RESOLVE_CLASS_TYPE.equals(resolveType);
     }

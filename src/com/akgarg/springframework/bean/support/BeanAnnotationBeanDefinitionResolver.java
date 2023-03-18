@@ -36,6 +36,7 @@ public final class BeanAnnotationBeanDefinitionResolver implements BeanDefinitio
         final String beanName = metadata.getBeanName();
         final String resolveType = metadata.getResolveType();
         final String initMethod = metadata.getBeanInitMethod();
+        final String destroyMethod = metadata.getBeanDestroyMethod();
         final boolean autowiredCandidate = metadata.isAutowiredCandidate();
 
         try {
@@ -55,6 +56,7 @@ public final class BeanAnnotationBeanDefinitionResolver implements BeanDefinitio
             definition.setBeanName(beanName);
             definition.setBean(bean);
             definition.setBeanInitMethod(initMethod);
+            definition.setBeanDestroyMethod(destroyMethod);
             definition.setAutowireCandidate(autowiredCandidate);
 
             for (final AnnotationProcessor processor : annotationProcessors) {
@@ -67,6 +69,7 @@ public final class BeanAnnotationBeanDefinitionResolver implements BeanDefinitio
             }
 
             return definition;
+
         } catch (Exception e) {
             throw new BeanCreationException("Error creating bean with name '" + beanName + "'", e);
         }

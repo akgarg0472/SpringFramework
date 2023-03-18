@@ -19,4 +19,6 @@ public @interface Bean {
 
     String initMethod() default "";
 
+    String destroyMethod() default "";
+
 }

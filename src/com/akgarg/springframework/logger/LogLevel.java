@@ -6,7 +6,7 @@ package com.akgarg.springframework.logger;
  */
 public enum LogLevel {
 
-    ERROR(1), WARN(2), INFO(3), DEBUG(4), FATAL(5), TRACE(6);
+    ERROR(1), WARN(2), INFO(3), DEBUG(4), FATAL(5), TRACE(6), ALL(7);
 
     private final int level;
 

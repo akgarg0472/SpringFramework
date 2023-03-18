@@ -38,4 +38,8 @@ public interface BeanDefinition {
 
     void setBeanInitMethod(String beanInitMethod);
 
+    String getBeanDestroyMethod();
+
+    void setBeanDestroyMethod(String beanDestroyMethod);
+
 }

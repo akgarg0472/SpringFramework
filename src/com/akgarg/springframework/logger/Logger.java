@@ -30,4 +30,6 @@ public interface Logger {
 
     boolean isTraceEnabled();
 
+    void changeLogLevel(LogLevel logLevel);
+
 }

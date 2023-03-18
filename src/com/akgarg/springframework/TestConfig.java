@@ -1,5 +1,6 @@
 package com.akgarg.springframework;
 
+import com.akgarg.springframework.bean.factory.InitializingBean;
 import com.akgarg.springframework.bean.factory.annotation.Autowired;
 import com.akgarg.springframework.bean.factory.annotation.Bean;
 import com.akgarg.springframework.bean.factory.annotation.Primary;
@@ -16,7 +17,7 @@ public class TestConfig {
         return new A();
     }
 
-    @Bean
+    @Bean(initMethod = "randomInitMethodTest")
     B b() {
         return new B();
     }
@@ -32,8 +33,16 @@ public class TestConfig {
 
     }
 
-    class B {
+    class B implements InitializingBean {
 
+        void randomInitMethodTest() {
+            System.out.println("@Bean Init method of B called");
+        }
+
+        @Override
+        public void afterPropertiesSet() {
+            System.out.println("afterPropertiesSet called");
+        }
     }
 
 }

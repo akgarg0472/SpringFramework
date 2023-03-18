@@ -32,10 +32,30 @@ public final class DefaultBeanResolver implements BeanResolver {
         final Annotation annotation = getBeanAnnotation(null, method);
 
         if (annotation instanceof Bean) {
-            beanInitMethodName = ((Bean) annotation).initMethod();
+            final String initMethod = ((Bean) annotation).initMethod();
+
+            if (StringUtils.isNonBlankString(initMethod)) {
+                beanInitMethodName = initMethod;
+            }
         }
 
         return beanInitMethodName;
+    }
+
+    @Override
+    public String resolveDestroyMethod(final Method method) {
+        String beanDestroyMethodName = null;
+        final Annotation annotation = getBeanAnnotation(null, method);
+
+        if (annotation instanceof Bean) {
+            final String destroyMethod = ((Bean) annotation).destroyMethod();
+
+            if (StringUtils.isNonBlankString(destroyMethod)) {
+                beanDestroyMethodName = destroyMethod;
+            }
+        }
+
+        return beanDestroyMethodName;
     }
 
     @Override

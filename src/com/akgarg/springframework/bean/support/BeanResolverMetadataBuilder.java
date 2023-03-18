@@ -20,6 +20,7 @@ public final class BeanResolverMetadataBuilder {
             final String beanName,
             final String resolveType,
             final String beanInitMethod,
+            final String beanDestroyMethod,
             final boolean autowireCandidate
     ) {
         return new BeanResolverMetadata() {
@@ -47,6 +48,11 @@ public final class BeanResolverMetadataBuilder {
             @Override
             public String getBeanInitMethod() {
                 return beanInitMethod;
+            }
+
+            @Override
+            public String getBeanDestroyMethod() {
+                return beanDestroyMethod;
             }
 
             @Override
