@@ -3,12 +3,12 @@ package com.akgarg.springframework.bean.support;
 import com.akgarg.springframework.bean.exception.BeanLifeCycleException;
 import com.akgarg.springframework.bean.factory.BeanDefinition;
 import com.akgarg.springframework.bean.factory.BeanLifeCycleMethodExecutor;
+import com.akgarg.springframework.bean.factory.annotation.PostConstruct;
+import com.akgarg.springframework.bean.factory.annotation.PreDestroy;
 import com.akgarg.springframework.logger.Logger;
 import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.ReflectionUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
