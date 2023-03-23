@@ -27,11 +27,9 @@ public final class BeanAnnotationBeanDefinitionResolver implements BeanDefinitio
     private final Collection<AnnotationProcessor> annotationProcessors;
 
     public BeanAnnotationBeanDefinitionResolver() {
-        logger.info(BeanAnnotationBeanDefinitionResolver.class, "Initialization started");
         this.annotationProcessors = new ArrayList<>();
         this.initAnnotationProcessors();
         Assert.nonEmpty(this.annotationProcessors, "AnnotationProcessors can't be empty");
-        logger.info(BeanAnnotationBeanDefinitionResolver.class, "Initialization completed");
     }
 
     @Override

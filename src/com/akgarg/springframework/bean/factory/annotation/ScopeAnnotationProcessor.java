@@ -25,6 +25,8 @@ public final class ScopeAnnotationProcessor implements AnnotationProcessor {
         Assert.notNull(metadata, "ScopeAnnotationProcessor metadata can't be null");
         Assert.notNull(metadata.getBeanDefinition(), "ScopeAnnotationProcessor BeanDefinition can't be null");
         Assert.nonEmpty(metadata.getResolveType(), "ScopeAnnotationProcessor resolveType is invalid " + metadata.getResolveType());
+
+        logger.trace(ScopeAnnotationProcessor.class, "Starting execution....");
         this.doProcess(metadata);
     }
 

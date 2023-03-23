@@ -19,7 +19,7 @@ public class ConsoleLogger extends AbstractLogger {
     private boolean enableTrace;
 
     public ConsoleLogger(final LogLevel logLevel) {
-        this.logFormatter = new ConsoleLoggerLogFormatter();
+        this.logFormatter = new ConsoleLogFormatter();
 
         Assert.notNull(logLevel, "Log Level can't be null");
         Assert.notNull(logFormatter, "Log Formatter can't be null");
@@ -33,10 +33,11 @@ public class ConsoleLogger extends AbstractLogger {
         Assert.notNull(clazz, "Log Class can't be null");
         Assert.notNull(message, "Log message can't be null");
 
-        final String formattedLogMessage = (String) this.logFormatter.format(
+        final String formattedLogMessage = this.logFormatter.format(
                 level,
                 clazz,
-                message
+                message,
+                String.class
         );
 
         System.out.println(formattedLogMessage);

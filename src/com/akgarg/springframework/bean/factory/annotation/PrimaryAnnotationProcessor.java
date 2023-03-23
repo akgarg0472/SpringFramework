@@ -26,6 +26,7 @@ public final class PrimaryAnnotationProcessor implements AnnotationProcessor {
         Assert.notNull(metadata.getBeanDefinition(), "PrimaryAnnotationProcessor BeanDefinition can't be null");
         Assert.nonEmpty(metadata.getResolveType(), "PrimaryAnnotationProcessor resolveType is invalid " + metadata.getResolveType());
 
+        logger.trace(PrimaryAnnotationProcessor.class, "Starting execution....");
         this.doProcess(metadata);
     }
 
@@ -63,7 +64,7 @@ public final class PrimaryAnnotationProcessor implements AnnotationProcessor {
         }
 
         if (annotation != null) {
-            logger.trace(PrimaryAnnotationProcessor.class, "Marking bean=" + beanDefinition.getBeanName() + " of type=" + beanDefinition.getBean().getClass().getName() + "as primary bean");
+            logger.debug(PrimaryAnnotationProcessor.class, "Marking bean=" + beanDefinition.getBeanName() + " of type=" + beanDefinition.getBean().getClass().getName() + "as primary bean");
             beanDefinition.setPrimary(true);
         }
     }

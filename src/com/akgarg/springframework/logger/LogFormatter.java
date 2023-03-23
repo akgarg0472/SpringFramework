@@ -6,6 +6,6 @@ package com.akgarg.springframework.logger;
  */
 public interface LogFormatter {
 
-    Object format(LogLevel logLevel, final Class<?> clazz, String message);
+    <T> T format(LogLevel logLevel, final Class<?> clazz, String message, final Class<? extends T> type);
 
 }

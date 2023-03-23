@@ -25,28 +25,25 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     private final long startTimestamp;
     private final BeanResolver beanResolver;
     private final BeanDefinitionResolver beanDefinitionResolver;
+    private Collection<BeanDefinitionHolder> beanDefinitionHolders;
 
     public DefaultBeanFactory(final boolean allowBeanOverriding) {
-        logger.info(DefaultBeanFactory.class, "Starting initialization of DefaultBeanFactory");
+        logger.info(DefaultBeanFactory.class, "Starting initialization...");
 
         this.startTimestamp = System.currentTimeMillis();
         this.beanDefinitionMap = new LinkedHashMap<>();
         this.allowBeanOverriding = allowBeanOverriding;
         this.beanResolver = new DefaultBeanResolver();
+        this.beanDefinitionHolders = new HashSet<>();
         this.beanDefinitionResolver = new BeanAnnotationBeanDefinitionResolver();
 
         Assert.notNull(this.beanResolver, "BeanResolver can't be null");
         Assert.notNull(this.beanDefinitionResolver, "BeanDefinitionResolver can't be null");
-
-        logger.debug(
-                DefaultBeanFactory.class,
-                "Initialization of DefaultBeanFactory completed successfully"
-        );
     }
 
     @Override
     public Object getBean(final String name) {
-        logger.debug(DefaultBeanFactory.class, "Getting bean with name=" + name);
+        logger.trace(DefaultBeanFactory.class, "Getting bean with name=" + name);
 
         final BeanDefinition beanDefinition = this.beanDefinitionMap.get(name);
 
@@ -59,7 +56,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public <T> T getBean(final Class<T> type) {
-        logger.debug(DefaultBeanFactory.class, "Getting bean of type '" + type + "'");
+        logger.trace(DefaultBeanFactory.class, "Getting bean of type '" + type + "'");
 
         final Map<String, T> beans = this.getBeansOfType(type);
 
@@ -79,7 +76,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(final String beanName, final Class<T> type) {
-        logger.debug(DefaultBeanFactory.class, "Getting bean with name=" + beanName + " and type=" + type);
+        logger.trace(DefaultBeanFactory.class, "Getting bean with name=" + beanName + " and type=" + type);
 
         Assert.nonEmpty(beanName, "Bean name should be a valid string");
         Assert.notNull(type, "Bean type should be non null");
@@ -103,7 +100,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public String[] getBeanNamesForType(final Class<?> type) {
-        logger.debug(DefaultBeanFactory.class, "Getting bean names list for type '" + type + "'");
+        logger.trace(DefaultBeanFactory.class, "Getting bean names list for type '" + type + "'");
 
         final Set<String> beansOfType = this.getBeansOfType(type).keySet();
         final String[] beanNames = new String[beansOfType.size()];
@@ -119,7 +116,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> Map<String, T> getBeansOfType(final Class<T> type) {
-        logger.debug(DefaultBeanFactory.class, "Getting bean names map for type '" + type + "'");
+        logger.trace(DefaultBeanFactory.class, "Getting bean names map for type '" + type + "'");
 
         final Map<String, BeanDefinition> beanDefinitionsOfType = this.getBeanDefinitionsOfType(type);
         final Map<String, T> beansOfType = new HashMap<>(beanDefinitionsOfType.size());
@@ -133,7 +130,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public <T> Map<String, BeanDefinition> getBeanDefinitionsOfType(final Class<T> type) {
-        logger.debug(DefaultBeanFactory.class, "Getting bean definitions for type '" + type + "'");
+        logger.trace(DefaultBeanFactory.class, "Getting bean definitions for type '" + type + "'");
 
         final Set<Map.Entry<String, BeanDefinition>> beans = this.beanDefinitionMap.entrySet();
         final Map<String, BeanDefinition> beanDefinitionsOfTypeMap = new HashMap<>();
@@ -151,7 +148,7 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public void registerBeanDefinition(final String beanName, final BeanDefinition beanDefinition) {
-        logger.debug(DefaultBeanFactory.class, "Registering bean definition with name = " + beanName);
+        logger.trace(DefaultBeanFactory.class, "Registering bean definition with name = " + beanName);
 
         final Object existingBean = this.beanDefinitionMap.get(beanName);
 
@@ -173,10 +170,10 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     @Override
     public void unregisterBeanDefinition(final String beanName) {
-        logger.debug(DefaultBeanFactory.class, "Unregistering bean with name '" + beanName + "'");
+        logger.trace(DefaultBeanFactory.class, "Unregistering bean with name '" + beanName + "'");
 
         if (this.containsBeanDefinition(beanName)) {
-            logger.debug(DefaultBeanFactory.class, "Removing bean with name '" + beanName + "' from registry");
+            logger.trace(DefaultBeanFactory.class, "Removing bean with name '" + beanName + "' from registry");
             this.beanDefinitionMap.remove(beanName);
         }
     }
@@ -236,16 +233,6 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
     }
 
     @Override
-    public BeanResolver getBeanNameResolver() {
-        return this.beanResolver;
-    }
-
-    @Override
-    public BeanDefinitionResolver getBeanDefinitionResolver() {
-        return this.beanDefinitionResolver;
-    }
-
-    @Override
     public BeanDefinition registerMethodBeanDefinition(final Object instance, final Method method) {
         Assert.notNull(instance, "Instance can't be null");
         Assert.notNull(method, "Method can't be null");
@@ -271,6 +258,16 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory {
 
     protected Map<String, BeanDefinition> getBeanDefinitionsMap() {
         return this.beanDefinitionMap;
+    }
+
+    protected Collection<BeanDefinitionHolder> getBeanDefinitionHolders() {
+        return beanDefinitionHolders;
+    }
+
+    @Override
+    public void setBeanDefinitionHolders(final Collection<BeanDefinitionHolder> beanDefinitionHolders) {
+        Assert.notNull(beanDefinitionHolders, "BeanDefinitionHolder collection can't be null");
+        this.beanDefinitionHolders = beanDefinitionHolders;
     }
 
     protected long getStartTimestamp() {

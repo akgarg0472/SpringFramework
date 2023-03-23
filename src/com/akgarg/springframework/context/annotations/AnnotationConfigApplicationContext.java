@@ -1,6 +1,8 @@
 package com.akgarg.springframework.context.annotations;
 
+import com.akgarg.springframework.bean.support.AnnotatedBeanDefinitionReader;
 import com.akgarg.springframework.bean.support.ClassPathBeanDefinitionScanner;
+import com.akgarg.springframework.context.support.BannerPrinter;
 import com.akgarg.springframework.context.support.GenericApplicationContext;
 import com.akgarg.springframework.logger.LogLevel;
 import com.akgarg.springframework.logger.Logger;
@@ -17,7 +19,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 
     static {
         LogFactory.setLogLevel(LogLevel.INFO);
-        logger.info(AnnotationConfigApplicationContext.class, "Starting initializing Spring container");
+        BannerPrinter.print();
+        logger.info(AnnotationConfigApplicationContext.class, "Starting initializing Spring context....");
     }
 
     private final ClassPathBeanDefinitionScanner beanDefinitionScanner;
@@ -38,6 +41,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
         init(basePackages);
         invokeAfterBeansCreationMethods();
         printContextStartupTime();
+        registerShutdownHook();
     }
 
     public AnnotationConfigApplicationContext(Class<?>... classes) {
@@ -45,14 +49,17 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
         init(classes);
         invokeAfterBeansCreationMethods();
         printContextStartupTime();
+        registerShutdownHook();
     }
 
     private void init(final Class<?>[] classes) {
         this.beanDefinitionReader.read(classes);
+        initBeans();
     }
 
     private void init(final String[] basePackages) {
         beanDefinitionScanner.scan(basePackages);
+        initBeans();
     }
 
     private void printContextStartupTime() {

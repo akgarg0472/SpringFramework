@@ -11,3 +11,6 @@ A basic implementation of one of the most popular Java framework for Enterprise 
 - @Autowired
 - @Primary
 - @Scope
+- @Configuration
+- @Component
+- @Service

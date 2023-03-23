@@ -2,6 +2,8 @@ package com.akgarg.springframework.context.support;
 
 import com.akgarg.springframework.context.ResourceLoader;
 import com.akgarg.springframework.context.exceptions.ResourceLoaderException;
+import com.akgarg.springframework.logger.Logger;
+import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
 import com.akgarg.springframework.util.ClassLoaderUtils;
 
@@ -18,8 +20,12 @@ import java.util.List;
  */
 public final class SystemResourcesLoader implements ResourceLoader {
 
+    private static final Logger logger = LogFactory.getDefaultLogger();
+
     @Override
     public Collection<Class<?>> getDeclaredClasses(final String packageName) throws ResourceLoaderException {
+        logger.debug(SystemResourcesLoader.class, "Loading classes for package: " + packageName);
+
         try {
             final ClassLoader classLoader = ClassLoaderUtils.getClassLoader();
             Assert.notNull(classLoader, "ClassLoader can't be null in ResourceLoader");

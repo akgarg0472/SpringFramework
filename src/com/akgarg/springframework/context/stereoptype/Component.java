@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * @author Akhilesh Garg
  * @since 26-02-2023
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Component {
 

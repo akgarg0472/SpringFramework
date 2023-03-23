@@ -1,7 +1,6 @@
-package com.akgarg.springframework.context.annotations;
+package com.akgarg.springframework.bean.support;
 
 import com.akgarg.springframework.bean.factory.ConfigurableBeanFactory;
-import com.akgarg.springframework.bean.support.BeanDefinitionHolder;
 import com.akgarg.springframework.logger.Logger;
 import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
@@ -22,10 +21,8 @@ public final class AnnotatedBeanDefinitionReader {
     private final ConfigurableBeanFactory beanFactory;
 
     public AnnotatedBeanDefinitionReader(final ConfigurableBeanFactory beanFactory) {
-        logger.info(getClass(), "Initialization started");
         this.beanFactory = beanFactory;
         Assert.notNull(this.beanFactory, "ConfigurableBeanFactory can't be null");
-        logger.info(getClass(), "Initialization completed");
     }
 
     public void read(final Class<?>[] classes) {
@@ -35,7 +32,6 @@ public final class AnnotatedBeanDefinitionReader {
 
         for (final Class<?> clazz : classes) {
             Assert.notNull(clazz, "Bean Definition configuration class can't be null");
-
             final Collection<? extends BeanDefinitionHolder> holders = doRead(clazz);
             beanDefinitionHolders.addAll(holders);
         }
@@ -45,7 +41,7 @@ public final class AnnotatedBeanDefinitionReader {
                 "Scanning completed successfully and found " + beanDefinitionHolders.size() + " beans eligible for registration"
         );
 
-        beanDefinitionHolders.forEach(holder -> beanFactory.registerBeanDefinition(holder.getBeanName(), holder.getBeanDefinition()));
+        beanFactory.setBeanDefinitionHolders(beanDefinitionHolders);
     }
 
     private Collection<? extends BeanDefinitionHolder> doRead(final Class<?> clazz) {

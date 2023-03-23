@@ -36,7 +36,7 @@ public class JavaSpecificationLifecycleMethodsExecutor implements BeanLifeCycleM
                     .collect(Collectors.toList());
 
             if (methods.isEmpty()) {
-                logger.trace(JavaSpecificationLifecycleMethodsExecutor.class, "Bean '" + beanName + "' doesn't have @PostConstruct method. Returning without doing anything");
+                logger.debug(JavaSpecificationLifecycleMethodsExecutor.class, "Bean '" + beanName + "' doesn't have @PostConstruct method. Returning without doing anything");
                 return;
             }
 
@@ -60,7 +60,7 @@ public class JavaSpecificationLifecycleMethodsExecutor implements BeanLifeCycleM
                     .collect(Collectors.toList());
 
             if (methods.isEmpty()) {
-                logger.trace(JavaSpecificationLifecycleMethodsExecutor.class, "Bean '" + beanName + "' doesn't have @PreDestroy method. Returning without doing anything");
+                logger.debug(JavaSpecificationLifecycleMethodsExecutor.class, "Bean '" + beanName + "' doesn't have @PreDestroy method. Returning without doing anything");
                 return;
             }
 

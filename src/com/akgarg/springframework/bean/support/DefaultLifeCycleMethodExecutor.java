@@ -28,7 +28,7 @@ public class DefaultLifeCycleMethodExecutor implements LifeCycleMethodExecutor {
 
         logger.debug(
                 DefaultLifeCycleMethodExecutor.class,
-                "LifeCycleMethodExecutor initialized successfully with " + lifeCycleMethodExecutors.size() + " executors"
+                "initialization successful with " + lifeCycleMethodExecutors.size() + " lifecycle method executors"
         );
     }
 

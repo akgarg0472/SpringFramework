@@ -3,12 +3,15 @@ package com.akgarg.springframework.context.support;
 import com.akgarg.springframework.bean.factory.BeanDefinition;
 import com.akgarg.springframework.bean.factory.LifeCycleMethodExecutor;
 import com.akgarg.springframework.bean.support.AutowireAnnotationBeanPostProcessor;
+import com.akgarg.springframework.bean.support.BeanDefinitionHolder;
 import com.akgarg.springframework.bean.support.DefaultBeanFactory;
 import com.akgarg.springframework.bean.support.DefaultLifeCycleMethodExecutor;
 import com.akgarg.springframework.context.ApplicationContext;
 import com.akgarg.springframework.logger.Logger;
 import com.akgarg.springframework.logger.support.LogFactory;
 import com.akgarg.springframework.util.Assert;
+
+import java.util.Collection;
 
 /**
  * @author Akhilesh Garg
@@ -54,6 +57,16 @@ public class GenericApplicationContext extends DefaultBeanFactory implements App
         });
     }
 
+    protected void registerShutdownHook() {
+        logger.debug(GenericApplicationContext.class, "Destroying beans.....");
+
+        Runtime.getRuntime()
+                .addShutdownHook(new Thread(() -> getBeanDefinitionsMap().forEach((beanName, beanDefinition) -> {
+                    logger.trace(GenericApplicationContext.class, "Destroying bean: " + beanName);
+                    lifeCycleMethodsExecutor.executeDestroyMethods(beanDefinition);
+                })));
+    }
+
     private void injectDependencies(
             final String beanName,
             final BeanDefinition beanDefinition
@@ -68,6 +81,17 @@ public class GenericApplicationContext extends DefaultBeanFactory implements App
     ) {
         logger.debug(getClass(), "Invoking bean life cycle methods for '" + beanName + "' bean");
         this.lifeCycleMethodsExecutor.executeInitMethods(beanDefinition);
+    }
+
+    protected void initBeans() {
+        final Collection<BeanDefinitionHolder> beanDefinitionHolders = getBeanDefinitionHolders();
+        logger.debug(GenericApplicationContext.class, "Starting spring bean registration process...");
+        beanDefinitionHolders.forEach(this::register);
+    }
+
+    private void register(final BeanDefinitionHolder holder) {
+        logger.debug(GenericApplicationContext.class, "Registering bean " + holder.getBeanName());
+        registerBeanDefinition(holder.getBeanName(), holder.getBeanDefinition());
     }
 
 }

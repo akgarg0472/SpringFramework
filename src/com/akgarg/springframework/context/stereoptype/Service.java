@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * @author Akhilesh Garg
  * @since 02-03-2023
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Service {
 }

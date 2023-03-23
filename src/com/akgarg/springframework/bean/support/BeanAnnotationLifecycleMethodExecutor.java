@@ -32,7 +32,7 @@ public class BeanAnnotationLifecycleMethodExecutor implements BeanLifeCycleMetho
             final String beanInitMethod = beanDefinition.getBeanInitMethod();
 
             if (!StringUtils.isNonBlankString(beanInitMethod)) {
-                logger.trace(
+                logger.debug(
                         BeanAnnotationLifecycleMethodExecutor.class,
                         "Bean '" + beanName + "' doesn't have any initMethod defined. Returning as it is without doing anything"
                 );
@@ -57,7 +57,7 @@ public class BeanAnnotationLifecycleMethodExecutor implements BeanLifeCycleMetho
     @Override
     public void executeDestroyMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(
+        logger.debug(
                 BeanAnnotationLifecycleMethodExecutor.class,
                 "starting executing executeDestroyMethod for bean '" + beanName + "'"
         );
@@ -66,7 +66,7 @@ public class BeanAnnotationLifecycleMethodExecutor implements BeanLifeCycleMetho
             final String beanDestroyMethod = beanDefinition.getBeanDestroyMethod();
 
             if (!StringUtils.isNonBlankString(beanDestroyMethod)) {
-                logger.trace(
+                logger.debug(
                         BeanAnnotationLifecycleMethodExecutor.class,
                         "Bean '" + beanName + "' doesn't have any destroyMethod defined"
                 );

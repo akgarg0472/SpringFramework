@@ -1,6 +1,9 @@
 package com.akgarg.springframework.bean.factory;
 
+import com.akgarg.springframework.bean.support.BeanDefinitionHolder;
+
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 /**
  * @author Akhilesh Garg
@@ -10,10 +13,8 @@ public interface ConfigurableBeanFactory extends BeanFactory, BeanDefinitionRegi
 
     ConfigurableBeanFactory getBeanFactory();
 
-    BeanResolver getBeanNameResolver();
-
-    BeanDefinitionResolver getBeanDefinitionResolver();
-
     BeanDefinition registerMethodBeanDefinition(Object instance, Method method);
+
+    void setBeanDefinitionHolders(Collection<BeanDefinitionHolder> beanDefinitionHolders);
 
 }

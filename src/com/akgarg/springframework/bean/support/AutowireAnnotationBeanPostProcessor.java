@@ -31,10 +31,8 @@ public final class AutowireAnnotationBeanPostProcessor {
     private final BeanFactory beanFactory;
 
     public AutowireAnnotationBeanPostProcessor(final BeanFactory beanFactory) {
-        logger.info(AutowireAnnotationBeanPostProcessor.class, "Starting initialization");
         this.beanFactory = beanFactory;
         Assert.notNull(beanFactory, "BeanFactory shouldn't be null");
-        logger.debug(AutowireAnnotationBeanPostProcessor.class, "Initialization completed");
     }
 
     public void process(final BeanDefinition beanDefinition) {
@@ -47,6 +45,7 @@ public final class AutowireAnnotationBeanPostProcessor {
 
     private void doResolve(final BeanDefinition beanDefinition) {
         if (beanDefinition.getBean() instanceof NullBean) {
+            logger.trace(AutowireAnnotationBeanPostProcessor.class, "Found bean '" + beanDefinition.getBeanName() + "' instance of " + NullBean.class.getName() + ". Returning without processing");
             return;
         }
 
@@ -84,10 +83,11 @@ public final class AutowireAnnotationBeanPostProcessor {
         try {
             logger.debug(
                     AutowireAnnotationBeanPostProcessor.class,
-                    "Autowiring dependency with name='" + beanName + "' of type '" + beanTypeToInject.getName() + "' in " + beanName
+                    "Autowiring dependency with name='" + beanName + "' of type '" + beanTypeToInject.getName() + "' in bean '" + beanName + "'"
             );
             field.setAccessible(true);
             field.set(beanDefinition.getBean(), dependency);
+
         } catch (IllegalAccessException e) {
             throw new DependencyInjectionException("Exception occurred while injecting bean with type '" + beanTypeToInject.getName() + "' in '" + beanName + "' bean", e);
         }

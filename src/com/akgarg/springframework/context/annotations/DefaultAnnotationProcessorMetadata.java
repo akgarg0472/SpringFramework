@@ -19,7 +19,8 @@ public final class DefaultAnnotationProcessorMetadata implements AnnotationProce
     private final String resolveType;
 
     private DefaultAnnotationProcessorMetadata(
-            final BeanResolverMetadata metadata, final BeanDefinition beanDefinition
+            final BeanResolverMetadata metadata,
+            final BeanDefinition beanDefinition
     ) {
         Assert.notNull(metadata, "Metadata can't be empty");
         this.instance = metadata.getInstance();
@@ -27,7 +28,7 @@ public final class DefaultAnnotationProcessorMetadata implements AnnotationProce
         this.resolveType = metadata.getResolveType();
         this.beanDefinition = beanDefinition;
     }
-    
+
     public static DefaultAnnotationProcessorMetadata of(
             final BeanResolverMetadata metadata, final BeanDefinition definition
     ) {

@@ -33,7 +33,7 @@ public class SpringBeanLifeCycleMethodExecutor implements BeanLifeCycleMethodExe
             final Object bean = beanDefinition.getBean();
 
             if (!(bean instanceof InitializingBean)) {
-                logger.trace(SpringBeanLifeCycleMethodExecutor.class, "Bean '" + beanName + "' is not implementing " + InitializingBean.class.getName() + ". Returning as it is without doing anything");
+                logger.debug(SpringBeanLifeCycleMethodExecutor.class, "Bean '" + beanName + "' is not implementing " + InitializingBean.class.getName() + ". Returning as it is without doing anything");
                 return;
             }
 
@@ -47,13 +47,13 @@ public class SpringBeanLifeCycleMethodExecutor implements BeanLifeCycleMethodExe
     @Override
     public void executeDestroyMethod(final BeanDefinition beanDefinition) {
         final String beanName = beanDefinition.getBeanName();
-        logger.trace(SpringBeanLifeCycleMethodExecutor.class, "Starting executing executeDestroyMethod for bean '" + beanName + "'");
+        logger.debug(SpringBeanLifeCycleMethodExecutor.class, "Starting executing executeDestroyMethod for bean '" + beanName + "'");
 
         try {
             final Object bean = beanDefinition.getBean();
 
             if (!(bean instanceof DisposableBean)) {
-                logger.trace(SpringBeanLifeCycleMethodExecutor.class, "Bean '" + beanName + "' is not implementing " + DisposableBean.class.getName() + ". Returning as it is without doing anything");
+                logger.debug(SpringBeanLifeCycleMethodExecutor.class, "Bean '" + beanName + "' is not implementing " + DisposableBean.class.getName() + ". Returning as it is without doing anything");
                 return;
             }
 
